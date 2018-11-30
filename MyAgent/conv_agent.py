@@ -6,7 +6,7 @@ import numpy as np
 def available_action(state):
     # 可行动的动作为0，不可行动的动作为-9999
     position = state['position']
-    board = state['board']
+    board = np.array(state['board'])
     x = position[0]
     y = position[1]
     if state['can_kick']:
@@ -111,7 +111,7 @@ class convNetwork(BaseAgent):
 
         self.availPi = tf.add(self.pi, self.available_moves)
         #TODO argmax instead of sample
-        self.dist = tf.distributions.Categorical(logits=self.pi)
+        self.dist = tf.distributions.Categorical(logits=self.availPi)
         self.action = self.dist.sample()
         self.neglog_probs = -self.dist.log_prob(self.action)
         self.params = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope=self.name)
